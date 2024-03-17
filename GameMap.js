@@ -14,7 +14,7 @@ export class GameMap {
 		// our character navigating around
 		// This started at location (-25,0,-25)
 		// and had width of 50 and a depth of 50
-		this.start = new THREE.Vector3(-50,0,-50);
+		this.start = new THREE.Vector3(-100,0,-50);
 
 		this.width = 200;
 		this.depth = 100;
