@@ -27,11 +27,14 @@ export class Graph {
 
 				let type = TileNode.Type.Water;
 
+				let node = new TileNode(this.nodes.length, i, j, type);
 				if(i<10){
 					type=TileNode.Type.Ground;
+					node = new TileNode(this.nodes.length, i, j, type);
 				}
 				else if(i>30){
 					type=TileNode.Type.Ground;
+					node = new TileNode(this.nodes.length, i, j, type);
 				}
 				/**
 
@@ -42,7 +45,6 @@ export class Graph {
 				// 10% of the time to "something else"
 				
 
-				let node = new TileNode(this.nodes.length, i, j, type);
 				this.nodes.push(node);
 			}
 		}
@@ -57,7 +59,7 @@ export class Graph {
 				let index = j * this.cols + i;
 				let current = this.nodes[index];
 
-				if (current.type == TileNode.Type.Ground) {
+				if (current.type == TileNode.Type.Ground || current.type == TileNode.Type.Water) {
 
 					if (i > 0) {
 						// CREATE A WEST EDGE

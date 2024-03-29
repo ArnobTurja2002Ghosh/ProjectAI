@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Character } from './Character.js';
-import { Bot } from './Bot.js';
+//import { Character } from './Character.js';
+//import { Bot } from './Bot.js';
+import { EnemyCroc } from './EnemyCroc.js';
 import { GameMap } from './GameMap.js';
-import { TileNode } from './TileNode.js';
 
 // Create Scene
 const scene = new THREE.Scene();
@@ -11,28 +11,18 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHei
 const renderer = new THREE.WebGLRenderer();
 
 const orbitControls = new OrbitControls(camera, renderer.domElement);
-
 // Create GameMap
 const gameMap = new GameMap();
 
 // Create clock
 const clock = new THREE.Clock();
+//camera.lookAt(scene.position)
+
+const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 
 // Create NPC
-//const bot = new Bot(new THREE.Color(0xffff00));
-let fishes=[];
-for(let i=0; i<15; i++){
-	let bot = new Bot(new THREE.Color(0xffff00));
-	fishes.push(bot);
-}
-function randomWaterTile(){
-	let a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
-	while(a.type!=TileNode.Type.Water){
-		a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
-	}
-	console.log(a);
-	return a;
-}
+//const bot = new Bot(new THREE.Color(0x0000ff));
+
 // Setup our scene
 function setup() {
 
@@ -53,15 +43,10 @@ function setup() {
 
 
 	// set character locations 
-	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
+	enemy.location = gameMap.localize(gameMap.graph.nodes[355]);
 
-	for(let i=0; i<15; i++){
-		fishes[i].location=gameMap.localize(randomWaterTile());
-		
-		scene.add(fishes[i].gameObject);
-	}
 	// add our characters to the scene
-	//scene.add(bot.gameObject);
+	scene.add(enemy.gameObject);
 
 	//First call to animate
 	animate();
@@ -76,11 +61,10 @@ function animate() {
 
 	let deltaTime = clock.getDelta();
 
-	//bot.update(deltaTime, gameMap);
-	for(let i=0; i<15; i++){
-		fishes[i].applyForce(fishes[i].wander());
-		fishes[i].update(deltaTime, gameMap);
-	}
+	enemy.applyForce(enemy.wander());
+
+	enemy.update(deltaTime);
+
 
 
 	orbitControls.update();
