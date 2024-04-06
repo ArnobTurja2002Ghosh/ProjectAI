@@ -28,6 +28,7 @@ const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 let fishes=[];
 for(let i=0; i<15; i++){
 	let bot = new Bot(new THREE.Color(0xffff00));
+	bot.edge_x=50; bot.edge_z=50;
 	fishes.push(bot);
 }
 function randomWaterTile(){

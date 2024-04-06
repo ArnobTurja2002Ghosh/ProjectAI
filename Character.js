@@ -31,6 +31,9 @@ export class Character {
 		this.maxForce = 15;
 
 		this.wanderAngle = null;
+
+		this.edge_x=100;
+		this.edge_z=50;
 	}
 
 	// update character
@@ -60,17 +63,17 @@ export class Character {
 	}
 	// check we are within the bounds of the world
 	checkEdges() {
-        if (this.location.x < -100) {
-            this.location.x = 100;
+        if (this.location.x < -this.edge_x) {
+            this.location.x = this.edge_x;
         } 
-        if (this.location.z < -50) {
-            this.location.z = 50;
+        if (this.location.z < -this.edge_z) {
+            this.location.z = this.edge_z;
         }
-        if (this.location.x > 100) {
-            this.location.x = -100;
+        if (this.location.x > this.edge_x) {
+            this.location.x = -this.edge_x;
         }
-        if (this.location.z > 50) {
-            this.location.z = -50;
+        if (this.location.z > this.edge_z) {
+            this.location.z = -this.edge_z;
         }
     }
 
