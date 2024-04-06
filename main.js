@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 //import { Character } from './Character.js';
-//import { Bot } from './Bot.js';
+import { Bot } from './Bot.js';
 import { EnemyCroc } from './EnemyCroc.js';
 import { GameMap } from './GameMap.js';
+import { TileNode } from './TileNode.js';
 
 // Create Scene
 const scene = new THREE.Scene();
@@ -19,6 +20,24 @@ const clock = new THREE.Clock();
 //camera.lookAt(scene.position)
 
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
+
+// Create NPC
+//const bot = new Bot(new THREE.Color(0x0000ff));
+
+//const bot = new Bot(new THREE.Color(0xffff00));
+let fishes=[];
+for(let i=0; i<15; i++){
+	let bot = new Bot(new THREE.Color(0xffff00));
+	fishes.push(bot);
+}
+function randomWaterTile(){
+	let a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
+	while(a.type!=TileNode.Type.Water){
+		a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
+	}
+	console.log(a);
+	return a;
+}
 
 // Create NPC
 //const bot = new Bot(new THREE.Color(0x0000ff));
@@ -48,6 +67,17 @@ function setup() {
 	// add our characters to the scene
 	scene.add(enemy.gameObject);
 
+	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
+	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
+
+	for(let i=0; i<15; i++){
+		fishes[i].location=gameMap.localize(randomWaterTile());
+
+		scene.add(fishes[i].gameObject);
+	}
+	// add our characters to the scene
+	//scene.add(bot.gameObject);
+
 	//First call to animate
 	animate();
 }
@@ -64,6 +94,11 @@ function animate() {
 	enemy.applyForce(enemy.wander());
 
 	enemy.update(deltaTime);
+
+	for(let i=0; i<15; i++){
+		fishes[i].applyForce(fishes[i].wander());
+		fishes[i].update(deltaTime, gameMap);
+	}
 
 
 
