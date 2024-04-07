@@ -28,7 +28,7 @@ const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 let fishes=[];
 for(let i=0; i<15; i++){
 	let bot = new Bot(new THREE.Color(0xffff00));
-	bot.edge_x=50; bot.edge_z=50;
+	bot.edge_x=50; bot.edge_z=49;
 	fishes.push(bot);
 }
 function randomWaterTile(){
@@ -92,13 +92,19 @@ function animate() {
 
 	let deltaTime = clock.getDelta();
 
-	enemy.applyForce(enemy.wander());
-
+	//enemy.applyForce(enemy.wander());
+	let steer = enemy.followPlayer(gameMap, fishes[0]);
+	enemy.applyForce(steer);
 	enemy.update(deltaTime);
 
-	for(let i=0; i<15; i++){
+	for(let i=0; i<fishes.length; i++){
 		fishes[i].applyForce(fishes[i].wander());
 		fishes[i].update(deltaTime, gameMap);
+		if(gameMap.quantize(fishes[i].location)==gameMap.quantize(enemy.location)){
+			console.log(i);
+			scene.remove(fishes[i].gameObject);
+			fishes.splice(i,1);
+		}
 	}
 
 
