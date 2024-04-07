@@ -1,9 +1,9 @@
-import { Character } from './Character.js';
+import { NPC } from './NPC.js';
 //import { State, PatrolState } from './State.js';
 import * as THREE from 'three';
 
 
-export class EnemyCroc extends Character{
+export class EnemyCroc extends NPC{
     constructor(mColor){
         super(mColor);
         //this.size = 20;

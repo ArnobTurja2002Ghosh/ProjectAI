@@ -2,7 +2,7 @@ import { TileNode } from './TileNode.js';
 import * as THREE from 'three';
 import { MapRenderer } from './MapRenderer';
 import { Graph } from './Graph';
-
+import { PriorityQueue } from './Util/PriorityQueue';
 
 export class GameMap {
 	
@@ -45,11 +45,103 @@ export class GameMap {
 
 	// Method to get location from a node
 	localize(node) {
+		
 		let x = this.start.x+(node.x*this.tileSize)+this.tileSize*0.5;
 		let y = this.tileSize;
 		let z = this.start.z+(node.z*this.tileSize)+this.tileSize*0.5;
 
 		return new THREE.Vector3(x,y,z);
+	}
+
+	quantize(location) {
+		let x = Math.floor((location.x - this.start.x)/this.tileSize);
+		let z = Math.floor((location.z - this.start.z)/this.tileSize);
+		
+		return this.graph.getNode(x,z);
+	}
+	backtrack(start, end, parents) {
+		let node = end;
+		let path = [];
+		path.push(node);
+		while (node != start) {
+			path.push(parents[node.id]);
+			node = parents[node.id];
+		}
+		return path.reverse();
+	}
+
+	manhattanDistance(node, end) {
+		if(node==undefined){
+			console.log('start is undefined');
+		}
+		if(end==undefined){
+			console.log('end is undefined');
+		}
+		let nodePos = this.localize(node);
+		let endPos = this.localize(end)
+
+		let dx = Math.abs(nodePos.x - endPos.x);
+		let dz = Math.abs(nodePos.z - endPos.z);
+	 	return dx + dz;
+
+	}
+	astar(start, end) {
+		let open = new PriorityQueue();
+		let closed = [];
+
+		open.enqueue(start, 0);
+
+		// For the cheapest node "parent" and 
+		// the cost of traversing that path
+		let parent = [];
+		let g = [];
+
+		// Start by populating our table
+		for (let node of this.graph.nodes) {
+			if (node == start) {
+				g[node.id] = 0;
+			} else {
+				g[node.id] = Number.MAX_VALUE;
+			}
+			parent[node.id] = null;
+		}
+
+
+		// Start our loop
+		while (!open.isEmpty()) {
+
+			
+			let current = open.dequeue();
+			closed.push(current);
+			
+
+			if (current == end) {
+				return this.backtrack(start, end, parent);
+			}
+			
+			for (let i in current.edges) {
+
+				let neighbour = current.edges[i];
+				let pathCost = neighbour.cost + g[current.id];
+
+				if (pathCost < g[neighbour.node.id]) {
+
+					parent[neighbour.node.id] = current;
+					g[neighbour.node.id] = pathCost;
+							
+					if (!closed.includes(neighbour.node)) {
+						
+						if (open.includes(neighbour.node)) {
+							open.remove(neighbour.node);
+						}
+
+						let f = g[neighbour.node.id] + this.manhattanDistance(neighbour.node, end);
+						open.enqueue(neighbour.node, f);
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
