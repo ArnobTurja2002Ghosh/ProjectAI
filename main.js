@@ -5,26 +5,18 @@ import { Bot } from './Bot.js';
 import { EnemyCroc } from './EnemyCroc.js';
 import { GameMap } from './GameMap.js';
 import { TileNode } from './TileNode.js';
-
 // Create Scene
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 // Create GameMap
 const gameMap = new GameMap();
-
 // Create clock
 const clock = new THREE.Clock();
 //camera.lookAt(scene.position)
-
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 
-// Create NPC
-//const bot = new Bot(new THREE.Color(0x0000ff));
-
-//const bot = new Bot(new THREE.Color(0xffff00));
 let fishes=[];
 for(let i=0; i<15; i++){
 	let bot = new Bot(new THREE.Color(0xffff00));
@@ -39,63 +31,46 @@ function randomWaterTile(){
 	console.log(a);
 	return a;
 }
-
 // Create NPC
 //const bot = new Bot(new THREE.Color(0x0000ff));
-
 // Setup our scene
 function setup() {
-
 	scene.background = new THREE.Color(0xffffff);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
-
 	camera.position.y = 80;
 	camera.lookAt(0,0,0);
-
 	//Create Light
 	let directionalLight = new THREE.DirectionalLight(0xffffff, 2);
 	directionalLight.position.set(0, 25, 0);
 	scene.add(directionalLight);
-
 	// initialize our gameMap
 	gameMap.init(scene);
-
-
 	// set character locations 
 	enemy.location = gameMap.localize(gameMap.graph.nodes[355]);
-
 	// add our characters to the scene
 	scene.add(enemy.gameObject);
-
 	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
 	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
-
 	for(let i=0; i<15; i++){
 		fishes[i].location=gameMap.localize(randomWaterTile());
-
 		scene.add(fishes[i].gameObject);
 	}
 	// add our characters to the scene
 	//scene.add(bot.gameObject);
-
 	//First call to animate
 	animate();
 }
-
-
 // animate
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 
-
 	let deltaTime = clock.getDelta();
 
-	//enemy.applyForce(enemy.wander());
-	let steer = enemy.followPlayer(gameMap, fishes[0]);
-	enemy.applyForce(steer);
-	enemy.update(deltaTime);
+	//let steer = enemy.followPlayer(gameMap, fishes[0]);
+	//enemy.applyForce(steer);
+	enemy.update(deltaTime,gameMap,fishes[0]);
 
 	for(let i=0; i<fishes.length; i++){
 		fishes[i].applyForce(fishes[i].wander());
@@ -108,10 +83,6 @@ function animate() {
 	}
 
 
-
 	orbitControls.update();
 }
-
-
-
 setup();
