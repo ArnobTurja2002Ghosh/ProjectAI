@@ -1,5 +1,3 @@
-//import { Character } from './Character.js';
-//import { EnemyCroc } from './EnemyCroc.js';
 import * as THREE from 'three';
 
 export class State {
@@ -22,22 +20,13 @@ export class State {
 	    };
 	
 	}
-
-
+  
 }
 
-export class ChaseState extends State{
 
-    enterState(enemy) {
-		enemy.topSpeed = 100;
-		console.log("Chasing!!!!")
 
-	}
 
-	updateState(enemy,gameMap,fish) {
 
-    	let steer = enemy.followPlayer(gameMap, fish);
-    	enemy.applyForce(steer);
-	
-    }
-}
+
+
+
