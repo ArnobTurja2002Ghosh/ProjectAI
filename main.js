@@ -5,6 +5,8 @@ import { Bot } from './Bot.js';
 import { EnemyCroc } from './EnemyCroc.js';
 import { GameMap } from './GameMap.js';
 import { TileNode } from './TileNode.js';
+import { Player } from './Behaviour/Player.js';
+import { Controller} from './Behaviour/Controller.js';
 // Create Scene
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -14,6 +16,12 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 const gameMap = new GameMap();
 // Create clock
 const clock = new THREE.Clock();
+
+// Controller for player
+const controller = new Controller(document);
+
+// Create player
+const player = new Player(new THREE.Color(0xff0000));
 //camera.lookAt(scene.position)
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 
@@ -47,9 +55,12 @@ function setup() {
 	// initialize our gameMap
 	gameMap.init(scene);
 	// set character locations 
+	player.location = gameMap.localize(gameMap.graph.nodes[205]);
+	player.location.y=10;
 	enemy.location = gameMap.localize(gameMap.graph.nodes[355]);
 	// add our characters to the scene
 	scene.add(enemy.gameObject);
+	scene.add(player.gameObject);
 	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
 	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
 	for(let i=0; i<15; i++){
@@ -71,7 +82,7 @@ function animate() {
 	//let steer = enemy.followPlayer(gameMap, fishes[0]);
 	//enemy.applyForce(steer);
 	enemy.update(deltaTime,gameMap,fishes[0]);
-
+	player.update(deltaTime, gameMap, controller, scene);
 	for(let i=0; i<fishes.length; i++){
 		fishes[i].applyForce(fishes[i].wander());
 		fishes[i].update(deltaTime, gameMap);
@@ -82,7 +93,13 @@ function animate() {
 		}
 	}
 
-
+	for(let i=0; i<player.bullets.length;i++){
+		player.bullets[i].update(deltaTime, gameMap);
+		if(Math.abs(player.bullets[i].location.x)>100 || Math.abs(player.bullets[i].location.z)>50){
+			scene.remove(player.bullets[i].gameObject);
+			player.bullets.splice(i,1);
+		}
+	}
 	orbitControls.update();
 }
 setup();
