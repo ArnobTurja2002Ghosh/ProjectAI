@@ -29,15 +29,15 @@ export class State {
 export class ChaseState extends State{
 
     enterState(enemy) {
-		enemy.topSpeed = 100;
+		enemy.topSpeed = 15;
 		console.log("Chasing!!!!")
 
 	}
 
 	updateState(enemy,gameMap,fish) {
 
-    	let steer = enemy.followPlayer(gameMap, fish);
-    	enemy.applyForce(steer);
+    let steer = enemy.followPlayer(gameMap, fish);
+    enemy.applyForce(steer);
 	
     }
 }

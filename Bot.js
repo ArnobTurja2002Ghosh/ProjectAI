@@ -18,12 +18,8 @@ export class Bot extends Character{
     }
     update(deltaTime) {
 		super.update(deltaTime,this.gameObject);
-        this.checkCollision();
-		//this.state.updateState(this, enemy);
+
 	}
 
-    checkCollision(){
-
-    }
 
 }
