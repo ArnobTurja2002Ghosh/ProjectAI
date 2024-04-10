@@ -16,13 +16,13 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 const gameMap = new GameMap();
 // Create clock
 const clock = new THREE.Clock();
-
+//camera.lookAt(scene.position)
 // Controller for player
 const controller = new Controller(document);
 
 // Create player
 const player = new Player(new THREE.Color(0xff0000));
-//camera.lookAt(scene.position)
+
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 
 let fishes=[];
@@ -54,15 +54,15 @@ function setup() {
 	scene.add(directionalLight);
 	// initialize our gameMap
 	gameMap.init(scene);
-	// set character locations 
+
 	player.location = gameMap.localize(gameMap.graph.nodes[205]);
 	player.location.y=10;
+	// set character locations 
 	enemy.location = gameMap.localize(gameMap.graph.nodes[355]);
 	// add our characters to the scene
 	scene.add(enemy.gameObject);
 	scene.add(player.gameObject);
-	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
-	//bot.location = gameMap.localize(gameMap.graph.nodes[20]);
+
 	for(let i=0; i<15; i++){
 		fishes[i].location=gameMap.localize(randomWaterTile());
 		scene.add(fishes[i].gameObject);
@@ -79,13 +79,13 @@ function animate() {
 
 	let deltaTime = clock.getDelta();
 
-	//let steer = enemy.followPlayer(gameMap, fishes[0]);
-	//enemy.applyForce(steer);
+
 	enemy.update(deltaTime,gameMap,fishes[0]);
 	player.update(deltaTime, gameMap, controller, scene);
+
 	for(let i=0; i<fishes.length; i++){
-		fishes[i].applyForce(fishes[i].wander());
-		fishes[i].update(deltaTime, gameMap);
+		fishes[i].applyForce(fishes[i].avoidCollision(enemy.location,15,1));
+		fishes[i].update(deltaTime);
 		if(gameMap.quantize(fishes[i].location)==gameMap.quantize(enemy.location)){
 			console.log(i);
 			scene.remove(fishes[i].gameObject);
@@ -100,6 +100,8 @@ function animate() {
 			player.bullets.splice(i,1);
 		}
 	}
+
+
 	orbitControls.update();
 }
 setup();
