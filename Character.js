@@ -1,39 +1,24 @@
 import * as THREE from 'three';
+import { CollisionDetector } from './CollisionDetector.js';
+import { VectorUtil } from './Util/VectorUtil.js';
 
 export class Character {
 
 	// Character Constructor
-	constructor(mColor,gameObject) {
+	constructor(mColor) {
 		this.size = 5
-        //this.gameObject = gameObject;
-		// Create our cone geometry and material
-		// let coneGeo = new THREE.ConeGeometry(this.size/2, this.size, 10);
-		// let coneMat = new THREE.MeshStandardMaterial({color: mColor});
-		
-		// // Create the local cone mesh (of type Object3D)
-		// let mesh = new THREE.Mesh(coneGeo, coneMat);
-		// // Increment the y position so our cone is just atop the y origin
-		// mesh.position.y = mesh.position.y+1;
-		// // Rotate our X value of the mesh so it is facing the +z axis
-		// mesh.rotateX(Math.PI/2);
-
-		// // Add our mesh to a Group to serve as the game object
-		// this.gameObject = new THREE.Group();
-		// this.gameObject.add(mesh);		
+        	
 
 		// Initialize movement variables
 		this.location = new THREE.Vector3(0,0,0);
 		this.velocity = new THREE.Vector3(0,0,0);
 		this.acceleration = new THREE.Vector3(0, 0, 0);
 
-		this.topSpeed = 15;
+		this.topSpeed = 25;
 		this.mass = 1;
 		this.maxForce = 15;
 
 		this.wanderAngle = null;
-
-		this.edge_x=100;
-		this.edge_z=50;
 	}
 
 	// update character
@@ -63,15 +48,19 @@ export class Character {
 	}
 	// check we are within the bounds of the world
 	checkEdges() {
+       
         if (this.location.x < -this.edge_x) {
             this.location.x = this.edge_x;
         } 
+   
         if (this.location.z < -this.edge_z) {
             this.location.z = this.edge_z;
         }
+   
         if (this.location.x > this.edge_x) {
             this.location.x = -this.edge_x;
         }
+ 
         if (this.location.z > this.edge_z) {
             this.location.z = -this.edge_z;
         }
@@ -124,6 +113,68 @@ export class Character {
   		return this.seek(target);
 
   	}
+
+
+	getCollisionPoint(obstaclePosition, obstacleRadius, prediction) {
+
+		// Get the vector between obstacle position and current location
+		let vectorA = VectorUtil.sub(obstaclePosition, this.location);
+		// Get the vector between prediction and current location
+		let vectorB = VectorUtil.sub(prediction, this.location);
+
+		// find the vector projection
+		// this method projects vectorProjection (vectorA) onto vectorB 
+		// and sets vectorProjection to the its result
+		let vectorProjection = VectorUtil.projectOnVector(vectorA, vectorB);
+		vectorProjection.add(this.location);
+		
+
+		// get the adjacent using trigonometry
+		let opp = obstaclePosition.distanceTo(vectorProjection);
+		let adj = Math.sqrt((obstacleRadius*obstacleRadius) - (opp*opp));
+		
+		// use scalar projection to get the collision length
+		let scalarProjection = vectorProjection.distanceTo(this.location);
+		let collisionLength = scalarProjection - adj;
+
+		// find the collision point by setting
+		// velocity to the collision length
+		// then adding the current location
+		let collisionPoint = VectorUtil.setLength(this.velocity, collisionLength);
+		collisionPoint.add(this.location);
+
+		console.log("getting collision point")
+		return collisionPoint;
+	}
+	avoidCollision(obstaclePosition, obstacleRadius, time) {
+
+		let steer = new THREE.Vector3();
+
+		let prediction = VectorUtil.multiplyScalar(this.velocity, time);
+		prediction.add(this.location);
+			
+		let collision = CollisionDetector.lineCircle(this.location, prediction, obstaclePosition, obstacleRadius);
+		//console.log(collision);
+
+
+		if (collision) {
+			let collisionPoint = this.getCollisionPoint(obstaclePosition,obstacleRadius,prediction);
+
+
+			let normal  = VectorUtil.sub(collisionPoint, obstaclePosition);
+			normal.setLength(5);
+
+			let target = VectorUtil.add(collisionPoint, normal);
+
+			
+			steer = this.seek(target);
+			
+
+		}
+        console.log("avoiding collision by ");
+		return steer;
+
+	}
 
 
 

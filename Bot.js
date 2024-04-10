@@ -16,14 +16,12 @@ export class Bot extends Character{
         this.gameObject = new THREE.Group();
 		this.gameObject.add(coneMesh);
     }
-    update(deltaTime) {
+    update(deltaTime,enemyLocation) {
 		super.update(deltaTime,this.gameObject);
-        this.checkCollision();
-		//this.state.updateState(this, enemy);
+        let steer = this.avoidCollision(enemyLocation,15,1);
+        this.applyForce(steer);
+
 	}
 
-    checkCollision(){
-
-    }
 
 }
