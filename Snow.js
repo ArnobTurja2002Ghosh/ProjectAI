@@ -6,7 +6,7 @@ export class Snow {
         this.scene = scene;
         this.count = count;
         this.snowflakes = [];
-        this.perlin = new Perlin(1); // Assuming Perlin noise size is 256
+        this.perlin = new Perlin(50); // Assuming Perlin noise size is 256
         this.init();
     }
 
