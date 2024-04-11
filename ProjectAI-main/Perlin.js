@@ -1,11 +1,10 @@
 import * as THREE from 'three';
-import { VectorUtil } from './Util/VectorUtil';
-import { MathUtil } from './Util/MathUtil'
+import { VectorUtil } from './Util/VectorUtil.js';
+import { MathUtil } from './Util/MathUtil.js'
 
 export class Perlin {
 
     constructor(size) {
-
     	this.size = size;
     	this.gradients = [];
 
@@ -17,6 +16,7 @@ export class Perlin {
     			this.gradients[i][j] = new THREE.Vector2(x,y);
     		}
     	}
+		
     }
 
     noise(mX, mY, zoom) {
