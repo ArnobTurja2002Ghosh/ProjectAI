@@ -1,5 +1,6 @@
 # ProjectAI
 Project Type: Game
+
 Game Name: "Fish Frenz"
 
 Goal: To collect all fishes(cones) in water before the enemy collects 3.
