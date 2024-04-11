@@ -8,9 +8,8 @@ import { TileNode } from './TileNode.js';
 import { Player } from './Behaviour/Player.js';
 import { Controller} from './Behaviour/Controller.js';
 import { IdleState } from './State.js';
-import { Pseudorandom } from './Pseudorandom.js';
+import { Snow } from './Snow.js';
 // Create Scene
-const pseudorandom = new Pseudorandom();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -19,7 +18,7 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 const gameMap = new GameMap();
 // Create clock
 const clock = new THREE.Clock();
-//camera.lookAt(scene.position)
+
 // Controller for player
 const controller = new Controller(document);
 
@@ -28,20 +27,20 @@ const player = new Player(new THREE.Color(0xff0000));
 
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
 
+var snowParticle = new Snow(scene,1000);
+
+
+
 let fishes=[];
 for(let i=0; i<15; i++){
 	let bot = new Bot(new THREE.Color(0xffff00));
 	bot.edge_x=50; bot.edge_z=49;
 	fishes.push(bot);
 }
-function randomWaterTile(i){
-	//let a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
-	let a=gameMap.graph.nodes[Math.floor(pseudorandom.halton(3, i, 0, gameMap.graph.nodes.length))];
-	console.log(pseudorandom.halton(3, i, 0, gameMap.graph.nodes.length));
+function randomWaterTile(){
+	let a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
 	while(a.type!=TileNode.Type.Water){
-		a=gameMap.graph.nodes[Math.floor(pseudorandom.halton(3, i, 0, gameMap.graph.nodes.length))];
-		if(a==undefined){console.log(pseudorandom.halton(3, i, 0, gameMap.graph.nodes.length))}
-		i++;
+		a=gameMap.graph.nodes[Math.floor(gameMap.graph.nodes.length*Math.random())];
 	}
 	console.log(a);
 	return a;
@@ -71,13 +70,12 @@ function setup() {
 	scene.add(player.gameObject);
 
 	for(let i=0; i<15; i++){
-		fishes[i].location=gameMap.localize(randomWaterTile(i));
+		fishes[i].location=gameMap.localize(randomWaterTile());
 		scene.add(fishes[i].gameObject);
 	}
 	// add our characters to the scene
 	//scene.add(bot.gameObject);
 	//First call to animate
-
 	animate();
 }
 // animate
@@ -113,6 +111,8 @@ function animate() {
 	else if(fishes.length==0){
 		document.getElementById("info").innerHTML ='You WIN!';
 	}
+
+
 	for(let i=0; i<player.bullets.length;i++){
 		player.bullets[i].update(deltaTime, gameMap);
 		if(Math.abs(player.bullets[i].location.x)>100 || Math.abs(player.bullets[i].location.z)>50){
@@ -123,14 +123,17 @@ function animate() {
 			
 			let distance = player.bullets[i].location.distanceTo(enemy.location);
 			if(distance <= 10){ // Assuming 10 is the hit radius around the enemyCroc
+				//enemy.hit =true;
+
 				scene.remove(player.bullets[i].gameObject);
 				player.bullets.splice(i, 1);
 				enemy.state = new IdleState();
         		enemy.state.enterState(enemy);
+				
 			}
 		}
 	}
-
+	snowParticle.animate(deltaTime);
 
 	orbitControls.update();
 }
