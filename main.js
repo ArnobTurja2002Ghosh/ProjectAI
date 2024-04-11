@@ -9,6 +9,7 @@ import { Player } from './Behaviour/Player.js';
 import { Controller} from './Behaviour/Controller.js';
 import { IdleState } from './State.js';
 import { Pseudorandom } from './Pseudorandom.js';
+import { Snow } from './Snow.js';
 // Create Scene
 const pseudorandom = new Pseudorandom();
 const scene = new THREE.Scene();
@@ -27,6 +28,9 @@ const controller = new Controller(document);
 const player = new Player(new THREE.Color(0xff0000));
 
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
+
+//create Snow
+var snow = new Snow(scene,1000);
 
 let fishes=[];
 for(let i=0; i<15; i++){
@@ -130,7 +134,7 @@ function animate() {
 			}
 		}
 	}
-
+	snow.animate(deltaTime);
 
 	orbitControls.update();
 }
