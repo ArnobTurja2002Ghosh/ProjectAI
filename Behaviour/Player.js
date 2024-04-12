@@ -41,7 +41,7 @@ export class Bullet extends Character{
 		let angle = Math.atan2(this.velocity.x, this.velocity.z);
 		this.gameObject.rotation.y = angle;
 
-		
+
 		// set the game object position
 		this.gameObject.position.set(this.location.x, this.location.y+0.25*this.size, this.location.z);
 
@@ -85,7 +85,7 @@ export class ShootingState extends State {
 			bullet1.velocity=new Vector3(50*Math.sin(force), 0, 50*Math.cos(force));
 			player.bullets.push(bullet1);
 			//player.applyForce(new Vector3(50*Math.sin(force), 0, 50*Math.cos(force)));
-		
+
 		}
 	}
 }
@@ -103,8 +103,8 @@ export class MovingState extends State {
 			let force = controller.direction();
 			force.setLength(50);
 			player.applyForce(force);
-		
+
 		}	
 	}
-  
+
 }

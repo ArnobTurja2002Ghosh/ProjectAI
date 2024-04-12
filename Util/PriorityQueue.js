@@ -1,6 +1,5 @@
-
 export class PriorityQueue {
-	
+
 	// Constructor
 	constructor() {
 		this.storage = [];
@@ -116,7 +115,7 @@ export class PriorityQueue {
 		this.heapifyDown(0);
 		return data[0];
 	}
-	
+
 	// Resort the priority queue
 	// to retain the min heap property
 	heapifyDown(index) {
@@ -148,7 +147,7 @@ export class PriorityQueue {
 		if (index = -1) {
 			return Error("Node with ID: " + node.id + " cannot be removed as it does not exist");
 		}
-		
+
 		this.storage[index] = this.storage[this.storage.length-1];
 		this.storage.splice(this.storage.length-1, 1);
 		this.heapifyDown(index);

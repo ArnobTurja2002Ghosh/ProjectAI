@@ -34,10 +34,30 @@ export class ChaseState extends State{
 
 	}
 
+
 	updateState(enemy,gameMap,fish) {
 
     let steer = enemy.followPlayer(gameMap, fish);
     enemy.applyForce(steer);
+
 	
+    }
+}
+
+export class IdleState extends State{
+
+    enterState(enemy) {
+		enemy.topSpeed = 0;
+		console.log("idle!!!!")
+		this.clock = new THREE.Clock();
+		this.clock.start();
+	}
+
+	updateState(enemy,gameMap,fish) {
+		if(this.clock.getElapsedTime()>=7){
+			enemy.state= new ChaseState();
+			enemy.state.enterState(enemy);
+		}
+
     }
 }

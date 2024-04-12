@@ -34,7 +34,7 @@ export class Controller {
 					console.log('shoot');
 					break;
 			}
-	
+
 		}
 		else if (event.type == 'keyup') {
 			switch (event.code) {
@@ -56,7 +56,7 @@ export class Controller {
 			}
 		}
 	}
-	
+
 	destroy() {
 		this.doc.removeEventListener('keydown', this);
 		this.doc.removeEventListener('keyup', this);
@@ -72,7 +72,7 @@ export class Controller {
 		if(this.shoot)
 			return true;
 	}
-	
+
 
 	direction() {
 		let direction = new THREE.Vector3();

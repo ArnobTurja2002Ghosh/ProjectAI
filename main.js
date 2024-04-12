@@ -9,10 +9,13 @@ import { Player } from './Behaviour/Player.js';
 import { Controller} from './Behaviour/Controller.js';
 import { IdleState } from './State.js';
 import { Pseudorandom } from './Pseudorandom.js';
+import { Snow } from './Snow.js';
 // Create Scene
 const pseudorandom = new Pseudorandom();
 const scene = new THREE.Scene();
+
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+console.log(scene.background);
 const renderer = new THREE.WebGLRenderer();
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 // Create GameMap
@@ -27,6 +30,9 @@ const controller = new Controller(document);
 const player = new Player(new THREE.Color(0xff0000));
 
 const enemy = new EnemyCroc(new THREE.Color(0x00ffff));
+
+//create Snow
+var snow = new Snow(scene,1000);
 
 let fishes=[];
 for(let i=0; i<15; i++){
@@ -50,7 +56,7 @@ function randomWaterTile(i){
 //const bot = new Bot(new THREE.Color(0x0000ff));
 // Setup our scene
 function setup() {
-	scene.background = new THREE.Color(0xffffff);
+	scene.background = new THREE.Color(0x000000);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	camera.position.y = 80;
@@ -130,7 +136,7 @@ function animate() {
 			}
 		}
 	}
-
+	snow.animate(deltaTime);
 
 	orbitControls.update();
 }

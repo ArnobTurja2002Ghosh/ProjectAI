@@ -6,12 +6,12 @@ export class Character {
 	// Character Constructor
 	constructor(mColor) {
 
-		this.size = 2;
+		this.size = 8;
 
 		// Create our cone geometry and material
 		let coneGeo = new THREE.ConeGeometry(this.size/2, this.size, 10);
 		let coneMat = new THREE.MeshStandardMaterial({color: mColor});
-		
+
 		// Create the local cone mesh (of type Object3D)
 		let mesh = new THREE.Mesh(coneGeo, coneMat);
 		// Increment the y position so our cone is just atop the y origin
@@ -28,7 +28,7 @@ export class Character {
 		this.velocity = new THREE.Vector3(0,0,0);
 		this.acceleration = new THREE.Vector3(0, 0, 0);
 
-		this.topSpeed = 5;
+		this.topSpeed = 10;
 		this.mass = 1;
 		this.frictionMagnitude = 0;
 	}
@@ -39,8 +39,8 @@ export class Character {
 		this.physics(gameMap);
 		// update velocity via acceleration
 		this.velocity.addScaledVector(this.acceleration, deltaTime);
-		
-		
+
+
 
 		if (this.velocity.length() > 0) {
 
@@ -50,7 +50,7 @@ export class Character {
 				let angle = Math.atan2(this.velocity.x, this.velocity.z);
 				this.gameObject.rotation.y = angle;
 			}
-			
+
 			if (this.velocity.length() > this.topSpeed) {
 				this.velocity.setLength(this.topSpeed);
 			} 
@@ -59,12 +59,12 @@ export class Character {
 			this.location.addScaledVector(this.velocity, deltaTime);
 
 		}
-		
+
 		// set the game object position
 		this.gameObject.position.set(this.location.x, this.location.y, this.location.z);
 		this.acceleration.multiplyScalar(0);
-	
-	
+
+
 	}
 
 	// check edges
@@ -104,7 +104,7 @@ export class Character {
   				this.location.z = nodeEdge - this.size/2;
   			}
   		}
-		
+
 
  	}
 
@@ -126,8 +126,8 @@ export class Character {
 		friction.normalize();
 		friction.multiplyScalar(this.frictionMagnitude);
 		this.applyForce(friction)
-		
-	
+
+
 	}
 
 

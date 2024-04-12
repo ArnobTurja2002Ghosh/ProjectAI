@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { VectorUtil } from '../../Util/VectorUtil.js';
-import { Character } from './Character.js';
+import { VectorUtil } from '../Util/VectorUtil.js';
+import { Character } from '../Character.js';
 
 export class NPC extends Character {
 
@@ -24,7 +24,7 @@ export class NPC extends Character {
 		let steer = new THREE.Vector3();
 		steer.subVectors(desired, this.velocity);
 
-	
+
 		return steer;
 	}
 
@@ -38,7 +38,7 @@ export class NPC extends Character {
 		if (distance < radius) {
 			let speed = (distance/radius) * this.topSpeed;
 			desired.setLength(speed);
-			
+
 		} else {
 			desired.setLength(this.topSpeed);
 		} 
@@ -63,7 +63,7 @@ export class NPC extends Character {
 			} else {
 				this.segment++;
 			}
-		
+
 		} else {
 			steer = this.seek(goTo);
 		}
@@ -74,6 +74,12 @@ export class NPC extends Character {
 	followPlayer(gameMap, player) {
 
 		let playerNode = gameMap.quantize(player.location);
+		if(playerNode==undefined){
+			console.log('Fish node is undefined', player.location);
+			let x = Math.floor((location.x - this.start.x)/this.tileSize);
+			let z = Math.floor((location.z - this.start.z)/this.tileSize);
+			console.log(x, z);
+		}
 		let npcNode = gameMap.quantize(this.location);
 
 		if (npcNode == playerNode) {

@@ -1,4 +1,4 @@
-import { NPC } from './NPC.js';
+import { NPC } from './Behaviour/NPC.js';
 import { State, ChaseState } from './State.js';
 import * as THREE from 'three';
 
@@ -7,6 +7,7 @@ import * as THREE from 'three';
 export class EnemyCroc extends NPC{
     constructor(mColor){
         super(mColor);
+        this.fishEaten=0;
 
 
         //this.size = 20;
@@ -25,6 +26,7 @@ export class EnemyCroc extends NPC{
         this.state = new ChaseState();
         this.state.enterState(this);
     }
+
     update(deltaTime,gameMap,fish) {
 		super.update(deltaTime,this.gameObject);
 

@@ -1,8 +1,9 @@
-import { TileNode } from './TileNode.js';
+
 import * as THREE from 'three';
 import { MapRenderer } from './MapRenderer';
 import { Graph } from './Graph';
 import { PriorityQueue } from './Util/PriorityQueue';
+
 
 export class GameMap {
 	
@@ -16,8 +17,8 @@ export class GameMap {
 		// and had width of 50 and a depth of 50
 		this.start = new THREE.Vector3(-100,0,-50);
 
-		this.width = 200;
-		this.depth = 100;
+		this.width = 200;//x
+		this.depth = 100;//z
 		
 		// We also need to define a tile size 
 		// for our tile based map
@@ -45,7 +46,6 @@ export class GameMap {
 
 	// Method to get location from a node
 	localize(node) {
-		
 		let x = this.start.x+(node.x*this.tileSize)+this.tileSize*0.5;
 		let y = this.tileSize;
 		let z = this.start.z+(node.z*this.tileSize)+this.tileSize*0.5;
@@ -56,7 +56,7 @@ export class GameMap {
 	quantize(location) {
 		let x = Math.floor((location.x - this.start.x)/this.tileSize);
 		let z = Math.floor((location.z - this.start.z)/this.tileSize);
-		
+
 		return this.graph.getNode(x,z);
 	}
 	backtrack(start, end, parents) {
@@ -110,15 +110,15 @@ export class GameMap {
 		// Start our loop
 		while (!open.isEmpty()) {
 
-			
+
 			let current = open.dequeue();
 			closed.push(current);
-			
+
 
 			if (current == end) {
 				return this.backtrack(start, end, parent);
 			}
-			
+
 			for (let i in current.edges) {
 
 				let neighbour = current.edges[i];
@@ -128,9 +128,9 @@ export class GameMap {
 
 					parent[neighbour.node.id] = current;
 					g[neighbour.node.id] = pathCost;
-							
+
 					if (!closed.includes(neighbour.node)) {
-						
+
 						if (open.includes(neighbour.node)) {
 							open.remove(neighbour.node);
 						}
@@ -143,6 +143,7 @@ export class GameMap {
 		}
 		return null;
 	}
+
 
 	/**
 	
